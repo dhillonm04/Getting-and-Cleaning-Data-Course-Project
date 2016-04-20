@@ -25,9 +25,13 @@ run_analysis <- function() {
   y_test <- read.table("UCI HAR Dataset/test/y_test.txt")
   subject_test <- read.table("UCI HAR Dataset/test/subject_test.txt")
   
-  #1.2 Merge the  'x' data set, y data set and subject data set
+  # create 'x' data set
   x_data_set <- rbind(x_train, x_test)
+  
+  # create 'y' data set
   y_data_set <- rbind(y_train, y_test)
+  
+  # create 'subject' data set
   subject_data_set <- rbind(subject_train, subject_test)
   
   
@@ -45,12 +49,16 @@ run_analysis <- function() {
 
   # 4. Appropriately labels the data set with descriptive variable names.
   names(subject_data_set) <- "subject"
+  names(x_data_subset) = gsub('-mean', 'Mean', names(x_data_subset))
+  names(x_data_subset) = gsub('-std', 'Std', names(x_data_subset))
+  names(x_data_subset) <- gsub('[-()]', '', names(x_data_subset))
   tidy_data <- cbind(subject_data_set, y_data_set,x_data_subset)
   
   
   # 5. From the data set in step 4, creates a second, independent tidy data set with the average of each variable for each activity and each subject.
   
- averages_tidy_data <- ddply(tidy_data, .(subject, activity), function(x) colMeans(x[, 3:68]))
- write.table(averages_tidy_data, "tidy_data_average.txt", row.name=FALSE)
+   averages_tidy_data <- ddply(tidy_data, .(subject, activity), function(x) colMeans(x[, 3:68]))
+  
+   write.table(averages_tidy_data, "tidy_data_average.txt", row.name=FALSE)
   
 }
